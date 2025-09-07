@@ -1,0 +1,5 @@
+{"currency":"etn","amount":"0.1","index":0,"timestamp":1757110702,"blockNumber":8910708,"commitment":"0x24e1eb2d8c5d8b6320514afcb9b26ef86a7b75dd15f20f0412061b7fb6e77de2","transactionHash":"0xa3325bef4f204e5e03191f3804d08da43d1fd5398797549a58a5e8ba4506a188","_id":"6t88TN5224tBMhqn"}
+{"$$indexCreated":{"fieldName":"blockNumber","unique":false,"sparse":false}}
+{"$$indexCreated":{"fieldName":"currency","unique":false,"sparse":false}}
+{"$$indexCreated":{"fieldName":"amount","unique":false,"sparse":false}}
+{"currency":"etn","amount":"0.1","index":1,"timestamp":1757225557,"blockNumber":8933679,"commitment":"0x09d28fa0e96dfd6ac1b6e9358568c3cda7b9c7ad6874f4fa8d959396e917cff1","transactionHash":"0xb04691f10fd12432881fef9abc79fbb516668a9c98f871b94c5660329f07730f","_id":"pEKd04a68AV5gnQU"}
