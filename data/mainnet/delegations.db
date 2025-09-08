@@ -1,0 +1,5 @@
+{"type":"Delegated","delegator":"0x2169942A68c3F987f69729bc858be40154113026","delegatee":"0x295A8EEe895B247d288Ae53988da3dB0d3b8327b","block":9461253,"_id":"uW6yWfWv24yTvwln"}
+{"$$indexCreated":{"fieldName":"delegatee","unique":false,"sparse":false}}
+{"$$indexCreated":{"fieldName":"delegator","unique":false,"sparse":false}}
+{"$$indexCreated":{"fieldName":"block","unique":false,"sparse":false}}
+{"type":"Undelegated","delegator":"0x2169942A68c3F987f69729bc858be40154113026","delegatee":"0x295A8EEe895B247d288Ae53988da3dB0d3b8327b","block":9461789,"_id":"hEjI8pV3Lplm5i1U"}

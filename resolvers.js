@@ -51,6 +51,32 @@ const resolvers = {
         throw error;
       }
     },
+    activeDelegators: async (_, { where = {} }, { db }) => {
+      try {
+        const allForDelegatee = await db.query('delegations', { delegatee: where.address }, 'block', 'asc', 1000000);
+        const groups = {};
+        for (const del of allForDelegatee) {
+          if (!groups[del.delegator]) groups[del.delegator] = [];
+          groups[del.delegator].push(del);
+        }
+        const active = [];
+        for (const acc in groups) {
+          const events = groups[acc].sort((a, b) => a.block - b.block);
+          const last = events[events.length - 1];
+          if (last.type === 'Delegated') {
+            active.push({
+              delegator: acc,
+              block: last.block,
+              transactionHash: last.transactionHash
+            });
+          }
+        }
+        return active;
+      } catch (error) {
+        logger.error('Error in activeDelegators resolver:', error);
+        throw error;
+      }
+    },
   },
 };
 

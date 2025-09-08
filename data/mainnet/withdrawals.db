@@ -1,3 +1,4 @@
+{"currency":"etn","amount":"1000","to":"0x295A8EEe895B247d288Ae53988da3dB0d3b8327b","fee":"531542161666950000","nullifier":"0x00c73b667e29584836d12aea03a9845d7d294e4d0453ddb06679dbe825ac9707","timestamp":1757227907,"blockNumber":9445291,"transactionHash":"0x48a6535864083db95ea0c37fedbac1549bc47df86cca92b96fe0d52c5e745070","_id":"RLCaEH7nFH46sZuJ"}
 {"$$indexCreated":{"fieldName":"blockNumber","unique":false,"sparse":false}}
 {"$$indexCreated":{"fieldName":"currency","unique":false,"sparse":false}}
 {"$$indexCreated":{"fieldName":"amount","unique":false,"sparse":false}}

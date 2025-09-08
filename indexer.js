@@ -13,12 +13,17 @@ const withdrawalInterface = new ethers.utils.Interface(['event Withdrawal(addres
 const encryptedNoteInterface = new ethers.utils.Interface(['event EncryptedNote(address indexed sender, bytes encryptedNote)']);
 const relayerRegisteredInterface = new ethers.utils.Interface(['event RelayerRegistered(string hostName, address relayerAddress, uint256 stakedAmount)']);
 const echoInterface = new ethers.utils.Interface(['event Echo(address indexed who, bytes data)']);
+const delegatedInterface = new ethers.utils.Interface(['event Delegated(address indexed account, address indexed to)']);
+const undelegatedInterface = new ethers.utils.Interface(['event Undelegated(address indexed account, address indexed from)']);
 
 const depositTopic = ethers.utils.id('Deposit(bytes32,uint32,uint256)'); //0xa945e51eec50ab98c161376f0db4cf2aeba3ec92755fe2fcd388bdbbb80ff196
 const withdrawalTopic = ethers.utils.id('Withdrawal(address,bytes32,address,uint256)'); //0xe9e508bad6d4c3227e881ca19068f099da81b5164dd6d62b2eaf1e8bc6c34931
 const encryptedNoteTopic = ethers.utils.id('EncryptedNote(address,bytes)'); //0xfa28df43db3553771f7209dcef046f3bdfea15870ab625dcda30ac58b82b4008
 const relayerRegisteredTopic = ethers.utils.id('RelayerRegistered(string,address,uint256)'); //0xd990ed339689bebddd7213a2e86c5db4212ac6ef4b3d2e58e3fe2a342afed23a
 const echoTopic = ethers.utils.id('Echo(address,bytes)'); //0x50d6f3fc915efd1695d8a4cb50da185984f50d256834b9cb308295eb3c872c9c
+const delegatedTopic = ethers.utils.id('Delegated(address,address)');
+const undelegatedTopic = ethers.utils.id('Undelegated(address,address)');
+
 
 const multicallAbi = [
   'function aggregate3(tuple(address target, bool allowFailure, bytes callData)[] calls) public view returns (tuple(bool success, bytes returnData)[] returnData)'
@@ -77,7 +82,7 @@ async function poll(chain, db) {
       const allLogs = await provider.getLogs({
         fromBlock: from,
         toBlock: to,
-        topics: [[depositTopic, withdrawalTopic, encryptedNoteTopic, relayerRegisteredTopic, echoTopic]]
+        topics: [[depositTopic, withdrawalTopic, encryptedNoteTopic, relayerRegisteredTopic, echoTopic, delegatedTopic, undelegatedTopic]]
       });
 
       // Filter for instance logs
@@ -195,6 +200,42 @@ async function poll(chain, db) {
         await db.insert('noteAccounts', noteAccountData);
 
         logger.info(`${chain} - NoteAccount on block ${log.blockNumber} for address ${who}`);
+      }
+
+      // Filter for delegated logs
+      const delegationLogs = allLogs.filter(log => 
+        log.address.toLowerCase() === config.GOVERNANCE_ADDRESS.toLowerCase() && 
+        (log.topics[0] === delegatedTopic || log.topics[0] === undelegatedTopic)
+      );
+
+      // Process delegation logs
+      for (const log of delegationLogs) {
+        if (log.topics[0] === delegatedTopic) {
+          const decoded = delegatedInterface.parseLog(log)
+          const { account, to } = decoded.args;
+          const data = {
+            type: 'Delegated',
+            delegator: account,
+            delegatee: to,
+            block: log.blockNumber,
+            transactionHash: log.transactionHash
+          };
+          await db.insert('delegations', data);
+          logger.info(`${chain} - Delegation on block ${log.blockNumber} - ${account} delegated to ${to}`);
+        } 
+        else if (log.topics[0] === undelegatedTopic) {
+          const decoded = undelegatedInterface.parseLog(log);
+          const { account, from } = decoded.args;
+          const data = {
+            type: 'Undelegated',
+            delegator: account,
+            delegatee: from,
+            block: log.blockNumber,
+            transactionHash: log.transactionHash
+          };
+          await db.insert('delegations', data);
+          logger.info(`${chain} - Undelegation on block ${log.blockNumber} - ${account} undelegated from ${from}`);
+        }
       }
 
       await db.setLastBlock(to);

@@ -15,7 +15,8 @@ class DB {
       withdrawals: new Datastore({ filename: `${dir}/withdrawals.db`, autoload: true }),
       relayers: new Datastore({ filename: `${dir}/relayers.db`, autoload: true }),
       encryptedNotes: new Datastore({ filename: `${dir}/encryptedNotes.db`, autoload: true }),
-      noteAccounts: new Datastore({ filename: `${dir}/noteAccounts.db`, autoload: true })
+      noteAccounts: new Datastore({ filename: `${dir}/noteAccounts.db`, autoload: true }),
+      delegations: new Datastore({ filename: `${dir}/delegations.db`, autoload: true })
     };
 
     this.init();
@@ -40,6 +41,9 @@ class DB {
       this.db.encryptedNotes.ensureIndex({ fieldName: 'blockNumber' });
       this.db.noteAccounts.ensureIndex({ fieldName: 'address' });
       this.db.noteAccounts.ensureIndex({ fieldName: 'index' });
+      this.db.delegations.ensureIndex({ fieldName: 'delegatee' });
+      this.db.delegations.ensureIndex({ fieldName: 'delegator' });
+      this.db.delegations.ensureIndex({ fieldName: 'block' });
     } catch (error) {
       logger.error('Error initializing DB:', error);
       throw error;

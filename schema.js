@@ -65,12 +65,20 @@ const typeDefs = gql`
     address: String
   }
 
+  type Delegation {
+    delegator: String!
+    block: Int!
+    transactionHash: String!
+  }
+
+
   type Query {
     deposits(first: Int, orderBy: OrderByField, orderDirection: OrderDirection, where: WhereFilter): [Deposit]
     withdrawals(first: Int, orderBy: OrderByField, orderDirection: OrderDirection, where: WhereFilter): [Withdrawal]
     relayers(first: Int, where: WhereFilter): [Relayer]
     encryptedNotes(first: Int, orderBy: OrderByField, orderDirection: OrderDirection, where: WhereFilter): [EncryptedNote]
     noteAccounts(where: WhereFilter): [NoteAccount]
+    activeDelegators(where: WhereFilter): [Delegation]
     _meta: Meta
   }
 `;
